@@ -300,3 +300,18 @@ test('notfound', async ({ page }) => {
   const title = await page.title();
   expect(title).toBeTruthy();
 });
+
+test('franchise-dashboard-with-data', async ({ page }) => {
+  // Add franchisee user
+  await page.route('*/**/api/auth', async (route) => {
+    const method = route.request().method();
+    if (method === 'PUT') {
+      await route.fulfill({
+        json: {
+          user: { id: '5', name: 'Franchisee', email: 'franchisee@test.com', roles: [{ role: 'franchisee', object: 2 }] },
+          token: 'franchisetoken',
+        },
+      });
+    }
+  });
+});
