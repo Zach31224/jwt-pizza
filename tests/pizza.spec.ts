@@ -314,4 +314,85 @@ test('franchise-dashboard-with-data', async ({ page }) => {
       });
     }
   });
+
+  await page.route('*/**/api/user/me', async (route) => {
+    await route.fulfill({
+      json: { id: '5', name: 'Franchisee', email: 'franchisee@test.com', roles: [{ role: 'franchisee', object: 2 }] },
+    });
+  });
+
+  // Mock franchise endpoint to return franchise with stores
+  await page.route(/\/api\/franchise\/5$/, async (route) => {
+    await route.fulfill({
+      json: [
+        {
+          id: 2,
+          name: 'LotaPizza',
+          admins: [{ id: 5, name: 'Franchisee', email: 'franchisee@test.com' }],
+          stores: [
+            { id: 4, name: 'Lehi', totalRevenue: 1000 },
+            { id: 5, name: 'Springville', totalRevenue: 1500 },
+          ],
+        },
+      ],
+    });
+  });
+
+  await page.route('*/**/api/order/menu', async (route) => {
+    await route.fulfill({
+      json: [
+        { id: 1, title: 'Veggie', image: 'pizza1.png', price: 0.0038, description: 'Garden' },
+      ],
+    });
+  });
+
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Login' }).click();
+  await page.getByPlaceholder('Email address').fill('franchisee@test.com');
+  await page.getByPlaceholder('Password').fill('a');
+  await page.getByRole('button', { name: 'Login' }).click();
+  await page.waitForTimeout(500);
+  
+  await page.goto('/franchise-dashboard');
+  await page.waitForTimeout(500);
+  await expect(page.getByText('Lehi')).toBeVisible();
+  await expect(page.getByText('Springville')).toBeVisible();
+});
+
+test('diner-dashboard-with-orders', async ({ page }) => {
+  await basicInit(page);
+  
+  await page.route('*/**/api/order', async (route) => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        json: {
+          dinerId: 3,
+          orders: [
+            {
+              id: 1,
+              franchiseId: 1,
+              storeId: 1,
+              date: '2024-06-05T05:14:40.000Z',
+              items: [{ id: 1, menuId: 1, description: 'Veggie', price: 0.05 }],
+            },
+          ],
+          page: 1,
+        },
+      });
+    } else {
+      const orderReq = route.request().postDataJSON();
+      await route.fulfill({
+        json: { order: { ...orderReq, id: 23 }, jwt: 'eyJpYXQ' },
+      });
+    }
+  });
+
+  await page.getByRole('link', { name: 'Login' }).click();
+  await page.getByPlaceholder('Email address').fill('d@jwt.com');
+  await page.getByPlaceholder('Password').fill('a');
+  await page.getByRole('button', { name: 'Login' }).click();
+  await expect(page.getByRole('link', { name: 'KC' })).toBeVisible();
+  await page.getByRole('link', { name: 'KC' }).click();
+  await page.waitForTimeout(500);
+  await expect(page.getByText(/Here is your history/)).toBeVisible();
 });
