@@ -6,7 +6,7 @@ import Button from '../components/button';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Franchise, Menu, Pizza, Store } from '../service/pizzaService';
 
-export default function Menu() {
+export default function MenuView() {
   const [order, setOrder] = useState(useLocation().state?.order || { items: [] });
   const [menu, setMenu] = useState<Menu>([]);
   const [storeMap, setStoreMap] = useState<{ [key: string]: { store: Store; franchise: Franchise } }>({});

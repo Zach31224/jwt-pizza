@@ -1,7 +1,12 @@
 {
+  "extends": "@istanbuljs/nyc-config-typescript",
+  "all": true,
+  "include": ["src/**/*.{ts,tsx}"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts"],
   "check-coverage": true,
   "branches": 0,
   "lines": 80,
   "functions": 0,
-  "statements": 0
+  "statements": 0,
+  "report-dir": "./coverage"
 }
