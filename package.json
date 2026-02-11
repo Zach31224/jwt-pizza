@@ -10,7 +10,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "npx playwright test",
-    "test:coverage": "npx playwright test && npx nyc report --reporter=text-summary"
+    "test:coverage": "npx playwright test && npx nyc report --reporter=text-summary --reporter=json-summary --reporter=html"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
