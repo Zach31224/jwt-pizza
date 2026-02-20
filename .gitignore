@@ -2,6 +2,9 @@
 **/.DS_Store
 cookies.txt
 config.js
-coverage
+coverage/
+.nyc_output/
+*.lcov
 dist
 **/.vite
+playwright-report/
