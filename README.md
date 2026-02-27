@@ -2,6 +2,7 @@
 
 [![CI Pipeline](https://github.com/zach31224/jwt-pizza/actions/workflows/ci.yml/badge.svg)](https://github.com/zach31224/jwt-pizza/actions/workflows/ci.yml)
 ![Coverage badge](https://pizza-factory.cs329.click/api/badge/zsandber/jwtpizzacoverage)
+[![Test S3 Deploy](https://github.com/Zach31224/jwt-pizza/actions/workflows/testS3Deploy.yml/badge.svg?branch=main)](https://github.com/Zach31224/jwt-pizza/actions/workflows/testS3Deploy.yml)
 
 **test badges to show individual coverage**
 [![Statements](https://img.shields.io/badge/statements-87.94%25-green)](./coverage/index.html)
@@ -156,4 +157,5 @@ export default function App() {
 ### Icons
 
 [HeroIcons](https://heroicons.com/) - MIT license
+
 
