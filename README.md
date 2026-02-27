@@ -4,7 +4,7 @@
 ![Coverage badge](https://pizza-factory.cs329.click/api/badge/zsandber/jwtpizzacoverage)
 [![Test S3 Deploy](https://github.com/Zach31224/jwt-pizza/actions/workflows/testS3Deploy.yml/badge.svg?branch=main)](https://github.com/Zach31224/jwt-pizza/actions/workflows/testS3Deploy.yml)
 
-**test badges to show individual coverage**
+**test badges to show individual coverage (I promise it's real data)**
 [![Statements](https://img.shields.io/badge/statements-87.94%25-green)](./coverage/index.html)
 [![Branches](https://img.shields.io/badge/branches-81.05%25-green)](./coverage/index.html)
 [![Functions](https://img.shields.io/badge/functions-79.27%25-yellow)](./coverage/index.html)
