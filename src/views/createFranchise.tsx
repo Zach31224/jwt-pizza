@@ -10,17 +10,24 @@ import { Franchise } from '../service/pizzaService';
 export default function CreateFranchise() {
   const navigateToParentPath = useBreadcrumb();
   const [franchise, setFranchise] = React.useState<Franchise>({ stores: [], id: '', name: '' });
+  const [errorMessage, setErrorMessage] = React.useState('');
 
   async function createFranchise(event: React.FormEvent) {
     event.preventDefault();
-    await pizzaService.createFranchise(franchise);
-    navigateToParentPath();
+    try {
+      setErrorMessage('');
+      await pizzaService.createFranchise(franchise);
+      navigateToParentPath();
+    } catch (error: any) {
+      setErrorMessage(error.message ?? 'Unable to create franchise');
+    }
   }
 
   return (
     <View title="Create franchise">
       <div className="text-start py-8 px-4 sm:px-6 lg:px-8">
         <form onSubmit={createFranchise}>
+          {errorMessage && <div className="text-orange-700 bg-yellow-100 p-2 rounded-md">⚠️ {errorMessage}</div>}
           <div className="text-neutral-100">Want to create franchise?</div>
           <div className="max-w-sm space-y-3 py-4  flex-1">
             <div className="relative">
