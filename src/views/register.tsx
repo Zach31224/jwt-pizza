@@ -4,10 +4,12 @@ import Button from '../components/button';
 import { pizzaService } from '../service/service';
 import { useBreadcrumb } from '../hooks/appNavigation';
 import View from './view';
-import { User } from '../service/pizzaService';
+import { Role, User } from '../service/pizzaService';
+import { useLocation } from 'react-router-dom';
 
 interface Props {
   setUser: (user: User) => void;
+  currentUser?: User | null;
 }
 
 export default function Register(props: Props) {
@@ -19,6 +21,7 @@ export default function Register(props: Props) {
   const navigateToParentPath = useBreadcrumb();
   const navigateToLogin = useBreadcrumb('login');
   const nameRef = React.useRef<HTMLInputElement>(null);
+  const location = useLocation();
 
   useEffect(() => {
     nameRef.current?.focus();
@@ -27,7 +30,22 @@ export default function Register(props: Props) {
   async function register(event: React.FormEvent) {
     event.preventDefault();
     try {
-      props.setUser(await pizzaService.register(name, email, password));
+      const previousToken = localStorage.getItem('token');
+      const registeredUser = await pizzaService.register(name, email, password);
+      const isAdminCreateUserFlow = location.pathname.includes('/admin-dashboard/') && Role.isRole(props.currentUser ?? null, Role.Admin);
+
+      if (isAdminCreateUserFlow) {
+        if (previousToken) {
+          localStorage.setItem('token', previousToken);
+        }
+        if (props.currentUser) {
+          props.setUser(props.currentUser);
+        }
+        navigateToParentPath();
+        return;
+      }
+
+      props.setUser(registeredUser);
       navigateToParentPath();
     } catch (error) {
       displayMessage(JSON.stringify(error));

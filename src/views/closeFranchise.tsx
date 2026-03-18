@@ -8,15 +8,22 @@ import { useBreadcrumb } from '../hooks/appNavigation';
 export default function CloseFranchise() {
   const state = useLocation().state;
   const navigateToParentPath = useBreadcrumb();
+  const [errorMessage, setErrorMessage] = React.useState('');
 
   async function close() {
-    await pizzaService.closeFranchise(state.franchise);
-    navigateToParentPath();
+    try {
+      setErrorMessage('');
+      await pizzaService.closeFranchise(state.franchise);
+      navigateToParentPath();
+    } catch (error: any) {
+      setErrorMessage(error.message ?? 'Unable to close franchise');
+    }
   }
 
   return (
     <View title='Sorry to see you go'>
       <div className='text-start py-8 px-4 sm:px-6 lg:px-8'>
+        {errorMessage && <div className='text-orange-700 bg-yellow-100 p-2 rounded-md'>⚠️ {errorMessage}</div>}
         <div className='text-neutral-100'>
           Are you sure you want to close the <span className='text-orange-500'>{state.franchise.name}</span> franchise? This will close all associated stores and cannot be restored. All outstanding
           revenue will not be refunded.

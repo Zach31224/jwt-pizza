@@ -8,15 +8,22 @@ import Button from '../components/button';
 export default function CloseStore() {
   const state = useLocation().state;
   const navigateToParent = useBreadcrumb();
+  const [errorMessage, setErrorMessage] = React.useState('');
 
   async function close() {
-    await pizzaService.closeStore(state.franchise, state.store);
-    navigateToParent();
+    try {
+      setErrorMessage('');
+      await pizzaService.closeStore(state.franchise, state.store);
+      navigateToParent();
+    } catch (error: any) {
+      setErrorMessage(error.message ?? 'Unable to close store');
+    }
   }
 
   return (
     <View title='Sorry to see you go'>
       <div className='text-start py-8 px-4 sm:px-6 lg:px-8'>
+        {errorMessage && <div className='text-orange-700 bg-yellow-100 p-2 rounded-md'>⚠️ {errorMessage}</div>}
         <div className='text-neutral-100'>
           Are you sure you want to close the <span className='text-orange-500'>{state.franchise.name}</span> store <span className='text-orange-500'>{state.store.name}</span> ? This cannot be
           restored. All outstanding revenue will not be refunded.

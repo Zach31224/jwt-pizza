@@ -82,7 +82,7 @@ export default function App() {
     { title: 'Payment', to: '/payment', component: <Payment />, display: [] },
     { title: 'Delivery', to: '/delivery', component: <Delivery />, display: [] },
     { title: 'Login', to: '/:subPath?/login', component: <Login setUser={setUser} />, constraints: [loggedOut], display: ['nav'] },
-    { title: 'Register', to: '/:subPath?/register', component: <Register setUser={setUser} />, constraints: [loggedOut], display: ['nav'] },
+    { title: 'Register', to: '/:subPath?/register', component: <Register setUser={setUser} currentUser={user} />, constraints: [loggedOut], display: ['nav'] },
     { title: 'Logout', to: '/:subPath?/logout', component: <Logout setUser={setUser} />, constraints: [loggedIn], display: ['nav'] },
     { title: 'Docs', to: '/docs/:docType?', component: <Docs />, display: [] },
     { title: 'Opps', to: '*', component: <NotFound />, display: [] },

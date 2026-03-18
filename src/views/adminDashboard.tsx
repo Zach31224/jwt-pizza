@@ -13,6 +13,7 @@ interface Props {
 
 export default function AdminDashboard(props: Props) {
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = React.useState('');
   const [franchiseList, setFranchiseList] = React.useState<FranchiseList>({ franchises: [], more: false });
   const [franchisePage, setFranchisePage] = React.useState(0);
   const filterFranchiseRef = React.useRef<HTMLInputElement>(null);
@@ -39,6 +40,10 @@ export default function AdminDashboard(props: Props) {
     navigate('/admin-dashboard/create-franchise');
   }
 
+  function createUser() {
+    navigate('/admin-dashboard/register');
+  }
+
   async function closeFranchise(franchise: Franchise) {
     navigate('/admin-dashboard/close-franchise', { state: { franchise: franchise } });
   }
@@ -48,22 +53,38 @@ export default function AdminDashboard(props: Props) {
   }
 
   async function filterFranchises() {
-    setFranchiseList(await pizzaService.getFranchises(franchisePage, 10, `*${filterFranchiseRef.current?.value}*`));
+    try {
+      setErrorMessage('');
+      setFranchiseList(await pizzaService.getFranchises(franchisePage, 10, `*${filterFranchiseRef.current?.value}*`));
+    } catch (error: any) {
+      setErrorMessage(error.message ?? 'Unable to filter franchises');
+    }
   }
 
   async function filterUsers() {
-    setUserList(await pizzaService.listUsers(1, 10, `*${filterUserRef.current?.value ?? ''}*`));
+    try {
+      setErrorMessage('');
+      setUserList(await pizzaService.listUsers(1, 10, `*${filterUserRef.current?.value ?? ''}*`));
+    } catch (error: any) {
+      setErrorMessage(error.message ?? 'Unable to filter users');
+    }
   }
 
   async function deleteUser(user: User) {
-    await pizzaService.deleteUser(user);
-    setUserList(await pizzaService.listUsers(userPage, 10, '*'));
+    try {
+      setErrorMessage('');
+      await pizzaService.deleteUser(user);
+      setUserList(await pizzaService.listUsers(userPage, 10, '*'));
+    } catch (error: any) {
+      setErrorMessage(error.message ?? 'Unable to delete user');
+    }
   }
 
   let response = <NotFound />;
   if (Role.isRole(props.user, Role.Admin)) {
     response = (
       <View title="Mama Ricci's kitchen">
+        {errorMessage && <div className="text-orange-700 bg-yellow-100 p-2 rounded-md">⚠️ {errorMessage}</div>}
         <div className="text-start py-8 px-4 sm:px-6 lg:px-8">
           <h3 className="text-neutral-100 text-xl">Franchises</h3>
           <div className="bg-neutral-100 overflow-clip my-4">
@@ -197,8 +218,9 @@ export default function AdminDashboard(props: Props) {
             </div>
           </div>
         </div>
-      <div>
+      <div className="flex gap-3">
         <Button className="w-36 text-xs sm:text-sm sm:w-64" title="Add Franchise" onPress={createFranchise} />
+        <Button className="w-36 text-xs sm:text-sm sm:w-64" title="Add User" onPress={createUser} />
       </div>
       </View>
     );
